@@ -35,7 +35,16 @@ public class AlueDao implements Dao<Alue, Integer> {
 
     @Override
     public Alue findOne(Integer key) throws SQLException {
-        return null;
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM alue WHERE alue_id = ?");
+        stmt.setInt(1, key);
+        ResultSet rs = stmt.executeQuery();
+        Alue a = new Alue(rs.getString("nimi"), rs.getInt("id"));
+        
+        rs.close();
+        stmt.close();
+        connection.close();
+        return a;
     }
 
     @Override
@@ -66,6 +75,38 @@ public class AlueDao implements Dao<Alue, Integer> {
 
         stmt.close();
         connection.close();
+    }
+
+    public int viestienLukumaara(int AlueId) throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT COUNT(*) AS lkm FROM viesti, ketju WHERE alue_id=?"
+                + " AND ketju_id = ketju.id;");
+        stmt.setObject(1, AlueId);
+        ResultSet rs = stmt.executeQuery();
+
+        int tulos = rs.getInt("lkm");
+
+        rs.close();
+        stmt.close();
+        connection.close();
+
+        return tulos;
+    }
+
+    public Timestamp viimeisinViesti(int AlueId) throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT pvm FROM viesti, ketju WHERE alue_id=? "
+                + "AND ketju_id = ketju.id ORDER BY pvm DESC LIMIT 1;");
+        stmt.setObject(1, AlueId);
+        ResultSet rs = stmt.executeQuery();
+
+        Timestamp tulos = rs.getTimestamp("pvm");
+
+        rs.close();
+        stmt.close();
+        connection.close();
+
+        return tulos;
     }
 
 }

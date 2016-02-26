@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,6 +75,36 @@ public class KetjuDao implements Dao<Ketju, Integer> {
     @Override
     public List<Ketju> findAll() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public int viestienLukumaara(int ketjuId) throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT COUNT(*) AS lkm FROM viesti WHERE ketju_id=?;");
+        stmt.setObject(1, ketjuId);
+        ResultSet rs = stmt.executeQuery();
+        
+        int tulos = rs.getInt("lkm");
+        
+        rs.close();
+        stmt.close();
+        connection.close();  
+        
+        return tulos;
+    }
+    
+    public Timestamp viimeisinViesti(int ketjuId) throws SQLException{
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT pvm FROM viesti WHERE ketju_id=? ORDER BY pvm DESC LIMIT 1;");
+        stmt.setObject(1, ketjuId);
+        ResultSet rs = stmt.executeQuery();
+        
+        Timestamp tulos = rs.getTimestamp("pvm");
+        
+        rs.close();
+        stmt.close();
+        connection.close();  
+        
+        return tulos;        
     }
 
 }
