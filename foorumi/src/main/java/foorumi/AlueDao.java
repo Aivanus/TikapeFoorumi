@@ -18,10 +18,17 @@ public class AlueDao implements Dao<Alue, Integer> {
         ArrayList<Alue> alueet = new ArrayList<>();
         while (rs.next()) {
             int id = rs.getInt("id");
+<<<<<<< HEAD
             String nimi = rs.getString("nimi");
             int lkm = viestienLukumaara(id);
             String pvm = viimeisinViesti(id);
             alueet.add(new Alue(nimi, id, lkm, pvm));
+=======
+            int lkm = this.viestienLukumaara(id);
+            String pvm = this.viimeisinViesti(id);
+         
+            alueet.add(new Alue(rs.getString("nimi"), id, lkm, pvm));
+>>>>>>> 465bc211a07ac820451daefb1bfd1b1ce4e12989
 
         }
         return alueet;
@@ -103,8 +110,13 @@ public class AlueDao implements Dao<Alue, Integer> {
                 + "AND ketju_id = ketju.id ORDER BY pvm DESC LIMIT 1;");
         stmt2.setObject(1, AlueId);
         ResultSet rs2 = stmt2.executeQuery();
-
-        String tulos = rs2.getString("pvm");
+        String tulos;
+        
+        try {
+            tulos = rs2.getString("pvm");        
+        } catch (Exception e) {
+            tulos = "ei viestejä";
+        }
 
         rs2.close();
         stmt2.close();

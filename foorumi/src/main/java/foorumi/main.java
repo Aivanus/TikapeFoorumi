@@ -26,7 +26,11 @@ public class main {
             String nimi = req.queryParams("nimi");
             aluedao.add(new Alue(nimi));
             res.redirect("./");
+<<<<<<< HEAD
             return "";
+=======
+            return null;
+>>>>>>> 465bc211a07ac820451daefb1bfd1b1ce4e12989
         });
 
     }
