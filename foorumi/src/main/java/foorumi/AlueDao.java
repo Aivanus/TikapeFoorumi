@@ -20,6 +20,9 @@ public class AlueDao implements Dao<Alue, Integer> {
             int id = rs.getInt("id");
             int lkm = this.viestienLukumaara(id);
             String pvm = this.viimeisinViesti(id);
+            if(pvm == null){
+                pvm = "ei viestejä";
+            }
             alueet.add(new Alue(rs.getString("nimi"), id, lkm, pvm));
 
         }
