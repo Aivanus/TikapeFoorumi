@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AlueDao implements Dao {
+public class AlueDao implements Dao <Alue, Integer>{
 
     private Database database;
 
@@ -22,10 +22,11 @@ public class AlueDao implements Dao {
         return alueet;
     }
 
-    public void add(String nimi) throws SQLException {
+    @Override
+    public void add(Alue a) throws SQLException {
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("INSERT INTO alue(nimi) VALUES(?);");
-        stmt.setString(1, nimi);
+        stmt.setString(1, a.getNimi());
         stmt.executeUpdate();
 
         stmt.close();
@@ -33,7 +34,7 @@ public class AlueDao implements Dao {
     }
 
     @Override
-    public Object findOne(Object key) throws SQLException {
+    public Alue findOne(Integer key) throws SQLException {
         return null;
     }
 
@@ -53,7 +54,7 @@ public class AlueDao implements Dao {
     }
 
     @Override
-    public void delete(Object key) throws SQLException {
+    public void delete(Integer key) throws SQLException {
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("DELETE FROM alue WHERE id=?;");
         stmt.setObject(1, key);
