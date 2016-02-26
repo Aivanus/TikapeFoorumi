@@ -20,9 +20,7 @@ public class AlueDao implements Dao<Alue, Integer> {
             int id = rs.getInt("id");
             int lkm = this.viestienLukumaara(id);
             String pvm = this.viimeisinViesti(id);
-            if(pvm == null){
-                pvm = "ei viestejä";
-            }
+         
             alueet.add(new Alue(rs.getString("nimi"), id, lkm, pvm));
 
         }
@@ -105,8 +103,13 @@ public class AlueDao implements Dao<Alue, Integer> {
                 + "AND ketju_id = ketju.id ORDER BY pvm DESC LIMIT 1;");
         stmt2.setObject(1, AlueId);
         ResultSet rs2 = stmt2.executeQuery();
-
-        String tulos = rs2.getString("pvm");
+        String tulos;
+        
+        try {
+            tulos = rs2.getString("pvm");        
+        } catch (Exception e) {
+            tulos = "ei viestejä";
+        }
 
         rs2.close();
         stmt2.close();

@@ -25,6 +25,7 @@ public class main {
         post("/", (req, res) -> {
             String nimi = req.queryParams("nimi");
             aluedao.add(new Alue(nimi));
+            res.redirect("./");
             return null;
         });
 
