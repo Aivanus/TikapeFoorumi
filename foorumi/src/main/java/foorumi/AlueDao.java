@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AlueDao implements Dao <Alue, Integer>{
+public class AlueDao implements Dao<Alue, Integer> {
 
     private Database database;
 
@@ -49,6 +49,10 @@ public class AlueDao implements Dao <Alue, Integer>{
             lista = collect(rs);
         } catch (Exception ex) {
         }
+
+        rs.close();
+        stmt.close();
+        connection.close();
 
         return lista;
     }
