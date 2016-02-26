@@ -14,10 +14,12 @@ public class main {
         AlueDao aluedao = new AlueDao(database);
         ViestiDao viestidao = new ViestiDao(database);
         KetjuDao ketjudao = new KetjuDao(database);
+        String context = "http://localhost:4567";
 
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("alueet", aluedao.findAll());
+            map.put("context",context);
 
             return new ModelAndView(map, "alueet");
         }, new ThymeleafTemplateEngine());
@@ -28,6 +30,13 @@ public class main {
             res.redirect("./");
             return null;
         });
+        
+        get("/alue", (req, res) -> {
+            String id = req.queryParams("id");
+            //sql
+            return new ModelAndView(map, "alueet");
+        }, new ThymeleafTemplateEngine());
+
 
     }
 

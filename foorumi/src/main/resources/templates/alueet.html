@@ -26,7 +26,8 @@
                 <th>Viimeisin viesti</th>
             </tr>
             <tr th:each="alue: ${alueet}">
-                <td th:text="${alue.nimi}">alueen nimi</td> 
+                <!--<td th:text="${alue.nimi}"> alueen nimi </td>--> 
+                <td><a th:href="@{${context} + '/alue?id=' + ${alue.id}}" th:text='${alue.nimi}'>nimi</a></td>
                 <td th:text="${alue.viestien_lkm}">viestien maara</td>
                 <td th:text="${alue.pvm}">Viimeisin paiva</td>
             </tr>
