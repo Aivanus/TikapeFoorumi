@@ -21,15 +21,16 @@
 
         <table>
             <tr>
-                <th>Alue</th>
-                <th>Viestejä yhteensä</th>		
+                <th th:text="'Alue: ' + ${alue}">Alue</th>
+                <th>Viestejä</th>		
                 <th>Viimeisin viesti</th>
             </tr>
-            <tr th:each="alue: ${alueet}">
+            <!---<tr th:each="alue: ${alueet}">
+
                 <td><a th:href="@{${context} + '/alue?id=' + ${alue.id}}" th:text='${alue.nimi}'>nimi</a></td>
                 <td th:text="${alue.viestien_lkm}">viestien maara</td>
                 <td th:text="${alue.pvm}">Viimeisin paiva</td>
-            </tr>
+            </tr>--> 
 
         </table>
 

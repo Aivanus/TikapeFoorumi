@@ -32,9 +32,11 @@ public class main {
         });
         
         get("/alue", (req, res) -> {
-            String id = req.queryParams("id");
-            //sql
-            return new ModelAndView(map, "alueet");
+            HashMap map = new HashMap<>();
+            int id = Integer.parseInt(req.queryParams("id"));
+            map.put("ketjut",ketjudao.findAllIn(id));
+            map.put("alue",aluedao.findOne(id).getNimi());
+            return new ModelAndView(map, "ketjut");
         }, new ThymeleafTemplateEngine());
 
 
