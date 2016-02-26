@@ -18,9 +18,10 @@ public class AlueDao implements Dao<Alue, Integer> {
         ArrayList<Alue> alueet = new ArrayList<>();
         while (rs.next()) {
             int id = rs.getInt("id");
-            int lkm = this.viestienLukumaara(id);
-            String pvm = this.viimeisinViesti(id);
-            alueet.add(new Alue(rs.getString("nimi"), id, lkm, pvm));
+            String nimi = rs.getString("nimi");
+            int lkm = viestienLukumaara(id);
+            String pvm = viimeisinViesti(id);
+            alueet.add(new Alue(nimi, id, lkm, pvm));
 
         }
         return alueet;

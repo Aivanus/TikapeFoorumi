@@ -18,14 +18,15 @@ public class main {
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("alueet", aluedao.findAll());
-
+            
             return new ModelAndView(map, "alueet");
         }, new ThymeleafTemplateEngine());
 
         post("/", (req, res) -> {
             String nimi = req.queryParams("nimi");
             aluedao.add(new Alue(nimi));
-            return null;
+            res.redirect("./");
+            return "";
         });
 
     }
