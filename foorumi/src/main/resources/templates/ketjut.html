@@ -25,21 +25,21 @@
                 <th>Viestejä</th>		
                 <th>Viimeisin viesti</th>
             </tr>
-            <!---<tr th:each="alue: ${alueet}">
+            <tr th:each="ketju: ${ketjut}">
 
-                <td><a th:href="@{${context} + '/alue?id=' + ${alue.id}}" th:text='${alue.nimi}'>nimi</a></td>
-                <td th:text="${alue.viestien_lkm}">viestien maara</td>
-                <td th:text="${alue.pvm}">Viimeisin paiva</td>
-            </tr>--> 
+                <td><a th:href="@{${context} + '/ketju?id=' + ${ketju.id}}" th:text='${ketju.otsikko}'>nimi</a></td>
+                <td th:text="${ketju.viestien_lkm}">viestien maara</td>
+                <td th:text="${ketju.pvm}">Viimeisin paiva</td>
+            </tr>
 
         </table>
 
         <br/>
 
-        <form method="POST" action="/">
-            Uuden alueen nimi:<br/>
-            <input type="text" name="nimi"/><br/>
-            <input type="submit" value="Lisää uusi alue"/>
+        <form method="POST" action="/ketju/lisaa">
+            Uuden ketjun otsikko:<br/>
+            <input type="text" name="otsikko"/><br/>
+            <input type="submit" value="Lisää ketju"/>
             
         </form>
 

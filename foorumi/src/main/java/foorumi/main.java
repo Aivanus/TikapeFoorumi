@@ -30,15 +30,24 @@ public class main {
             res.redirect("./");
             return null;
         });
-        
+         
         get("/alue", (req, res) -> {
             HashMap map = new HashMap<>();
             int id = Integer.parseInt(req.queryParams("id"));
             map.put("ketjut",ketjudao.findAllIn(id));
             map.put("alue",aluedao.findOne(id).getNimi());
+            map.put("context",context);
+            
             return new ModelAndView(map, "ketjut");
         }, new ThymeleafTemplateEngine());
 
+        post("/ketju/lisaa", (req, res) -> {
+            String otsikko = req.queryParams("otsikko");
+            int alueId = Integer.parseInt(req.queryParams("alueId"));
+            ketjudao.add(new Ketju(alueId, otsikko));
+            res.redirect("./");
+            return null;
+        });
 
     }
 

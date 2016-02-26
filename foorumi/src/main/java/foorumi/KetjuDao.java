@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +18,10 @@ public class KetjuDao implements Dao<Ketju, Integer> {
     private List<Ketju> collect(ResultSet rs) throws Exception {
         ArrayList<Ketju> ketjut = new ArrayList<>();
         while (rs.next()) {
-            ketjut.add(new Ketju(rs.getInt("id"), rs.getInt("alue_id"), rs.getString("otsikko")));
+            int id = rs.getInt("id");
+            int lkm = this.viestienLukumaara(id);
+            String pvm = this.viimeisinViesti(id);
+            ketjut.add(new Ketju(id, rs.getInt("alue_id"), rs.getString("otsikko"), lkm, pvm));
         }
         return ketjut;
     }
@@ -92,13 +93,19 @@ public class KetjuDao implements Dao<Ketju, Integer> {
         return tulos;
     }
     
-    public Timestamp viimeisinViesti(int ketjuId) throws SQLException{
+    public String viimeisinViesti(int ketjuId) throws SQLException{
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("SELECT pvm FROM viesti WHERE ketju_id=? ORDER BY pvm DESC LIMIT 1;");
         stmt.setObject(1, ketjuId);
         ResultSet rs = stmt.executeQuery();
         
-        Timestamp tulos = rs.getTimestamp("pvm");
+        String tulos;
+        
+        try {
+            tulos = rs.getString("pvm");        
+        } catch (Exception e) {
+            tulos = "ei viestejä";
+        }
         
         rs.close();
         stmt.close();
@@ -106,5 +113,6 @@ public class KetjuDao implements Dao<Ketju, Integer> {
         
         return tulos;        
     }
+
 
 }
