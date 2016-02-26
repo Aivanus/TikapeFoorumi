@@ -17,7 +17,11 @@ public class AlueDao implements Dao<Alue, Integer> {
     private List<Alue> collect(ResultSet rs) throws Exception {
         ArrayList<Alue> alueet = new ArrayList<>();
         while (rs.next()) {
-            alueet.add(new Alue(rs.getString("nimi"), rs.getInt("id")));
+            int id = rs.getInt("id");
+            int lkm = this.viestienLukumaara(id);
+            String pvm = this.viimeisinViesti(id);
+            alueet.add(new Alue(rs.getString("nimi"), id, lkm, pvm));
+
         }
         return alueet;
     }
@@ -54,7 +58,6 @@ public class AlueDao implements Dao<Alue, Integer> {
         ResultSet rs = stmt.executeQuery("SELECT * FROM alue");
         List<Alue> lista = null;
         try {
-
             lista = collect(rs);
         } catch (Exception ex) {
         }
@@ -78,33 +81,33 @@ public class AlueDao implements Dao<Alue, Integer> {
     }
 
     public int viestienLukumaara(int AlueId) throws SQLException {
-        Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT COUNT(*) AS lkm FROM viesti, ketju WHERE alue_id=?"
+        Connection connection1 = database.getConnection();
+        PreparedStatement stmt1 = connection1.prepareStatement("SELECT COUNT(*) AS lkm FROM viesti, ketju WHERE alue_id=?"
                 + " AND ketju_id = ketju.id;");
-        stmt.setObject(1, AlueId);
-        ResultSet rs = stmt.executeQuery();
+        stmt1.setObject(1, AlueId);
+        ResultSet rs1 = stmt1.executeQuery();
 
-        int tulos = rs.getInt("lkm");
+        int tulos = rs1.getInt("lkm");
 
-        rs.close();
-        stmt.close();
-        connection.close();
+        rs1.close();
+        stmt1.close();
+        connection1.close();
 
         return tulos;
     }
 
-    public Timestamp viimeisinViesti(int AlueId) throws SQLException {
-        Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT pvm FROM viesti, ketju WHERE alue_id=? "
+    public String viimeisinViesti(int AlueId) throws SQLException {
+        Connection connection2 = database.getConnection();
+        PreparedStatement stmt2 = connection2.prepareStatement("SELECT pvm FROM viesti, ketju WHERE alue_id=? "
                 + "AND ketju_id = ketju.id ORDER BY pvm DESC LIMIT 1;");
-        stmt.setObject(1, AlueId);
-        ResultSet rs = stmt.executeQuery();
+        stmt2.setObject(1, AlueId);
+        ResultSet rs2 = stmt2.executeQuery();
 
-        Timestamp tulos = rs.getTimestamp("pvm");
+        String tulos = rs2.getString("pvm");
 
-        rs.close();
-        stmt.close();
-        connection.close();
+        rs2.close();
+        stmt2.close();
+        connection2.close();
 
         return tulos;
     }
