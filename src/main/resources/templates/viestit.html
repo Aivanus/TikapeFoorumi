@@ -25,13 +25,14 @@
 
     <body>
         
+        <a href="./" th:text="Etusivu"></a>
+        <br/>
+        
         <b>
             <span th:text="'Alue: ' + ${alue.nimi} + ' -> ' + ${ketju.otsikko}">Alue + ketju</span>
         </b>
         <table>
-            <!--<tr>
-                <th th:text="'Alue: ' + ${alue.nimi} + ' -> ' + ${ketju.otsikko}">Alue + ketju</th>
-            </tr>-->
+
             <tr th:each="viesti: ${viestit}">
                 <td th:text="${viesti.nimim} + ':'" style="text-align:right; padding-right: 2em;">nimimerkki</td>
                 <td th:text="${viesti.viesti}" style="text-align:justify; width: 60%">viesti</td>

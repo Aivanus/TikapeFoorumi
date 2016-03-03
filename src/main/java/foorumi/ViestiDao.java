@@ -29,6 +29,7 @@ public class ViestiDao implements Dao<Viesti, Integer> {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+
     public List<Viesti> findAllIn(int ketju_id) throws SQLException {
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("SELECT * FROM viesti WHERE ketju_id = ?");

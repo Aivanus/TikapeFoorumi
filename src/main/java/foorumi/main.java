@@ -1,8 +1,6 @@
 package foorumi;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import spark.ModelAndView;
 import static spark.Spark.get;
@@ -14,21 +12,18 @@ public class main {
 
     public static void main(String[] args) throws Exception {
 
-        // asetetaan portti jos heroku antaa PORT-ympäristömuuttujan
         if (System.getenv("PORT") != null) {
             port(Integer.valueOf(System.getenv("PORT")));
         }
 
         String address = "jdbc:sqlite:foorumi.db";
 
-        /*if (System.getenv("DATABASE_URL") != null) {
-            address = System.getenv("DATABASE_URL");
-        }*/
 
         Database database = new Database(address);
         AlueDao aluedao = new AlueDao(database);
         ViestiDao viestidao = new ViestiDao(database);
         KetjuDao ketjudao = new KetjuDao(database);
+
 
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
@@ -110,10 +105,4 @@ public class main {
 
     }
 
-//    private static String purge(String s) {
-//        if (s.isEmpty()) {
-//            s = null;
-//        }
-//        return s;
-//    }
 }

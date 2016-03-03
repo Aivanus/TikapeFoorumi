@@ -1,7 +1,5 @@
 package foorumi;
 
-import java.sql.Timestamp;
-
 public class Alue {
 
     private String nimi;
