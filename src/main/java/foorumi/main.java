@@ -21,9 +21,9 @@ public class main {
 
         String address = "jdbc:sqlite:foorumi.db";
 
-        if (System.getenv("DATABASE_URL") != null) {
+        /*if (System.getenv("DATABASE_URL") != null) {
             address = System.getenv("DATABASE_URL");
-        }
+        }*/
 
         Database database = new Database(address);
         AlueDao aluedao = new AlueDao(database);
