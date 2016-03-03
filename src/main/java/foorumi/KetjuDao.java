@@ -20,7 +20,11 @@ public class KetjuDao implements Dao<Ketju, Integer> {
         while (rs.next()) {
             int id = rs.getInt("id");
             int lkm = this.viestienLukumaara(id);
-            String pvm = this.viimeisinViesti(id);
+//            String pvm = this.viimeisinViesti(id);
+            String pvm = rs.getString("max_pvm");
+            if(pvm == null){
+                pvm = "ei viestejä";
+            }
             ketjut.add(new Ketju(id, rs.getInt("alue_id"), rs.getString("otsikko"), lkm, pvm));
         }
         return ketjut;
@@ -43,7 +47,7 @@ public class KetjuDao implements Dao<Ketju, Integer> {
     public List<Ketju> findAllIn(int alueId, int sivu) throws SQLException {
         Connection connection = database.getConnection();
         //PreparedStatement stmt = connection.prepareStatement("SELECT * FROM ketju WHERE alue_id = ? LIMIT 10 OFFSET ?;");
-        PreparedStatement stmt = connection.prepareStatement("SELECT Ketju.* FROM Ketju LEFT JOIN " +
+        PreparedStatement stmt = connection.prepareStatement("SELECT Ketju.*, max_pvm FROM Ketju LEFT JOIN " +
             "(SELECT Viesti.ketju_id, MAX(pvm) AS max_pvm FROM viesti GROUP BY Viesti.ketju_id)" +
             "viesti ON Ketju.id = viesti.ketju_id " +
             "WHERE ketju.alue_id = ?" +
@@ -108,26 +112,26 @@ public class KetjuDao implements Dao<Ketju, Integer> {
         return tulos;
     }
 
-    public String viimeisinViesti(int ketjuId) throws SQLException {
-        Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT pvm FROM viesti WHERE ketju_id=? ORDER BY pvm DESC LIMIT 1;");
-        stmt.setObject(1, ketjuId);
-        ResultSet rs = stmt.executeQuery();
-
-        String tulos;
-
-        try {
-            tulos = rs.getString("pvm");
-        } catch (Exception e) {
-            tulos = "ei viestejä";
-        }
-
-        rs.close();
-        stmt.close();
-        connection.close();
-
-        return tulos;
-    }
+//    public String viimeisinViesti(int ketjuId) throws SQLException {
+//        Connection connection = database.getConnection();
+//        PreparedStatement stmt = connection.prepareStatement("SELECT pvm FROM viesti WHERE ketju_id=? ORDER BY pvm DESC LIMIT 1;");
+//        stmt.setObject(1, ketjuId);
+//        ResultSet rs = stmt.executeQuery();
+//
+//        String tulos;
+//
+//        try {
+//            tulos = rs.getString("pvm");
+//        } catch (Exception e) {
+//            tulos = "ei viestejä";
+//        }
+//
+//        rs.close();
+//        stmt.close();
+//        connection.close();
+//
+//        return tulos;
+//    }
     
     public int countAllIn(int alueId) throws SQLException{
         Connection connection = database.getConnection();
