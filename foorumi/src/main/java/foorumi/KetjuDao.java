@@ -28,13 +28,23 @@ public class KetjuDao implements Dao<Ketju, Integer> {
 
     @Override
     public Ketju findOne(Integer key) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM ketju WHERE id = ?");
+        stmt.setInt(1, key);
+        ResultSet rs = stmt.executeQuery();
+        Ketju k = new Ketju(rs.getInt("id"), rs.getInt("alue_id"), rs.getString("otsikko"));
+
+        rs.close();
+        stmt.close();
+        connection.close();
+        return k;
     }
 
-    public List<Ketju> findAllIn(int alue_id) throws SQLException {
+    public List<Ketju> findAllIn(int alueId, int sivu) throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM ketju WHERE alue_id = ?");
-        stmt.setInt(1, alue_id);
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM ketju WHERE alue_id = ? LIMIT 10 OFFSET ?;");
+        stmt.setInt(1, alueId);
+        stmt.setInt(2, (sivu - 1) * 10);
         ResultSet rs = stmt.executeQuery();
         List<Ketju> lista = null;
         try {
@@ -42,7 +52,7 @@ public class KetjuDao implements Dao<Ketju, Integer> {
             lista = collect(rs);
         } catch (Exception ex) {
         }
-        
+
         rs.close();
         stmt.close();
         connection.close();
@@ -77,42 +87,55 @@ public class KetjuDao implements Dao<Ketju, Integer> {
     public List<Ketju> findAll() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     public int viestienLukumaara(int ketjuId) throws SQLException {
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("SELECT COUNT(*) AS lkm FROM viesti WHERE ketju_id=?;");
         stmt.setObject(1, ketjuId);
         ResultSet rs = stmt.executeQuery();
-        
+
         int tulos = rs.getInt("lkm");
-        
+
         rs.close();
         stmt.close();
-        connection.close();  
-        
+        connection.close();
+
         return tulos;
     }
-    
-    public String viimeisinViesti(int ketjuId) throws SQLException{
+
+    public String viimeisinViesti(int ketjuId) throws SQLException {
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("SELECT pvm FROM viesti WHERE ketju_id=? ORDER BY pvm DESC LIMIT 1;");
         stmt.setObject(1, ketjuId);
         ResultSet rs = stmt.executeQuery();
-        
+
         String tulos;
-        
+
         try {
-            tulos = rs.getString("pvm");        
+            tulos = rs.getString("pvm");
         } catch (Exception e) {
             tulos = "ei viestejä";
         }
+
+        rs.close();
+        stmt.close();
+        connection.close();
+
+        return tulos;
+    }
+    
+    public int countAllIn(int alueId) throws SQLException{
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT COUNT(*) FROM ketju WHERE alue_id = ?");
+        stmt.setInt(1, alueId);
+        ResultSet rs = stmt.executeQuery();
+        int tulos = rs.getInt("COUNT(*)");
         
         rs.close();
         stmt.close();
-        connection.close();  
-        
-        return tulos;        
-    }
+        connection.close();
 
+        return tulos;
+    }
 
 }

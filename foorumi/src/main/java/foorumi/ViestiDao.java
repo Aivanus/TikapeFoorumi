@@ -18,7 +18,7 @@ public class ViestiDao implements Dao<Viesti, Integer> {
     private List<Viesti> collect(ResultSet rs) throws Exception {
         ArrayList<Viesti> viestit = new ArrayList<>();
         while (rs.next()) {
-            viestit.add(new Viesti(rs.getInt("id"), rs.getInt("ketju_id"), rs.getString("viesti"), rs.getTimestamp("pvm"), 
+            viestit.add(new Viesti(rs.getInt("id"), rs.getInt("ketju_id"), rs.getString("viesti"), rs.getString("pvm"), 
             rs.getString("nimim")));
         }
         return viestit;
@@ -76,6 +76,20 @@ public class ViestiDao implements Dao<Viesti, Integer> {
     @Override
     public List<Viesti> findAll() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public int countAllIn(int ketjuId) throws SQLException{
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT COUNT(*) FROM viesti WHERE ketju_id = ?");
+        stmt.setInt(1, ketjuId);
+        ResultSet rs = stmt.executeQuery();
+        int tulos = rs.getInt("COUNT(*)");
+        
+        rs.close();
+        stmt.close();
+        connection.close();
+
+        return tulos;
     }
 
 }

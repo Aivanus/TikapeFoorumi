@@ -1,5 +1,8 @@
 package foorumi;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import spark.ModelAndView;
 import static spark.Spark.get;
@@ -19,36 +22,90 @@ public class main {
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("alueet", aluedao.findAll());
-            map.put("context",context);
+            map.put("context", context);
 
             return new ModelAndView(map, "alueet");
         }, new ThymeleafTemplateEngine());
 
         post("/", (req, res) -> {
             String nimi = req.queryParams("nimi");
+            if (nimi.isEmpty()) {
+                res.redirect("./");
+                return null;
+            }
             aluedao.add(new Alue(nimi));
             res.redirect("./");
             return null;
         });
-         
+
         get("/alue", (req, res) -> {
             HashMap map = new HashMap<>();
             int id = Integer.parseInt(req.queryParams("id"));
-            map.put("ketjut",ketjudao.findAllIn(id));
-            map.put("alue",aluedao.findOne(id).getNimi());
-            map.put("context",context);
-            
+            int sivu = Integer.parseInt(req.queryParams("sivu"));
+            ArrayList<Integer> sivut = new ArrayList<>();
+            for (int i = 1; i <= ketjudao.countAllIn(id) / 10 + 1; i++) {
+                sivut.add(i);
+            }
+            map.put("sivut", sivut);
+            map.put("ketjut", ketjudao.findAllIn(id, sivu));
+            map.put("alue", aluedao.findOne(id));
+            map.put("context", context);
+
             return new ModelAndView(map, "ketjut");
         }, new ThymeleafTemplateEngine());
 
-        post("/ketju/lisaa", (req, res) -> {
+        post("/alue", (req, res) -> {
             String otsikko = req.queryParams("otsikko");
             int alueId = Integer.parseInt(req.queryParams("alueId"));
+            if (otsikko.isEmpty()) {
+                res.redirect("./alue?id=" + alueId + "&sivu=1");
+                return null;
+            }
             ketjudao.add(new Ketju(alueId, otsikko));
-            res.redirect("./");
+            res.redirect("./alue?id=" + alueId + "&sivu=1");
+            return null;
+        });
+
+        get("/ketju", (req, res) -> {
+            HashMap map = new HashMap<>();
+            int ketjuId = Integer.parseInt(req.queryParams("id"));
+            Ketju k = ketjudao.findOne(ketjuId);
+            int alueId = k.getAlueId();
+            ArrayList<Integer> sivut = new ArrayList<>();
+            for (int i = 1; i <= viestidao.countAllIn(ketjuId) / 10 + 1; i++) {
+                sivut.add(i);
+            }
+            map.put("sivut", sivut);
+            map.put("viestit", viestidao.findAllIn(ketjuId));
+            map.put("ketju", k);
+            map.put("alue", aluedao.findOne(alueId));
+            map.put("context", context);
+
+            return new ModelAndView(map, "viestit");
+        }, new ThymeleafTemplateEngine());
+
+        post("/ketju", (req, res) -> {
+            int ketjuId = Integer.parseInt(req.queryParams("ketjuId"));
+            String viesti = req.queryParams("viesti");
+            String nimim = req.queryParams("nimim");
+            if (viesti.isEmpty()) {
+                res.redirect("./ketju?id=" + ketjuId);
+                return null;
+            }
+            if (nimim.isEmpty()) {
+                nimim = "Anonyymi";
+            }
+            viestidao.add(new Viesti(ketjuId, viesti, nimim));
+            res.redirect("./ketju?id=" + ketjuId);
             return null;
         });
 
     }
 
+//    private static String purge(String s) {
+//        if (s.isEmpty()) {
+//            s = null;
+//        }
+//        return s;
+//    }
 }

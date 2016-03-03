@@ -1,21 +1,23 @@
 
 package foorumi;
 
-import java.sql.Timestamp;
-
 public class Viesti {
     private int id;
     private int ketjuId;
     private String viesti;
-    private Timestamp pvm;
+    private String pvm;
     private String nimim;
 
-    public Viesti(int id, int ketjuId, String viesti, Timestamp pvm, String nimim) {
+    public Viesti(int id, int ketjuId, String viesti, String pvm, String nimim) {
+        this(ketjuId, viesti, nimim);
         this.id = id;
+        this.pvm = pvm;
+    }
+
+    Viesti(int ketjuId, String viesti, String nimim) {
         this.ketjuId = ketjuId;
         this.viesti = viesti;
-        this.pvm = pvm;
-        this.nimim = nimim;
+        this.nimim = nimim;     
     }
 
     public int getId() {
@@ -30,7 +32,7 @@ public class Viesti {
         return viesti;
     }
 
-    public Timestamp getPvm() {
+    public String getPvm() {
         return pvm;
     }
 

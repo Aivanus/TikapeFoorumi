@@ -56,7 +56,7 @@ public class AlueDao implements Dao<Alue, Integer> {
     public List findAll() throws SQLException {
         Connection connection = database.getConnection();
         Statement stmt = connection.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM alue");
+        ResultSet rs = stmt.executeQuery("SELECT * FROM alue ORDER BY nimi ASC");
         List<Alue> lista = null;
         try {
             lista = collect(rs);
