@@ -6,23 +6,33 @@ import java.util.Collections;
 import java.util.HashMap;
 import spark.ModelAndView;
 import static spark.Spark.get;
+import static spark.Spark.port;
 import static spark.Spark.post;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 
 public class main {
 
     public static void main(String[] args) throws Exception {
+
+        // asetetaan portti jos heroku antaa PORT-ympäristömuuttujan
+        if (System.getenv("PORT") != null) {
+            port(Integer.valueOf(System.getenv("PORT")));
+        }
+
         String address = "jdbc:sqlite:foorumi.db";
+
+        if (System.getenv("DATABASE_URL") != null) {
+            address = System.getenv("DATABASE_URL");
+        }
+
         Database database = new Database(address);
         AlueDao aluedao = new AlueDao(database);
         ViestiDao viestidao = new ViestiDao(database);
         KetjuDao ketjudao = new KetjuDao(database);
-        String context = "http://localhost:4567";
 
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("alueet", aluedao.findAll());
-            map.put("context", context);
 
             return new ModelAndView(map, "alueet");
         }, new ThymeleafTemplateEngine());
@@ -49,7 +59,6 @@ public class main {
             map.put("sivut", sivut);
             map.put("ketjut", ketjudao.findAllIn(id, sivu));
             map.put("alue", aluedao.findOne(id));
-            map.put("context", context);
 
             return new ModelAndView(map, "ketjut");
         }, new ThymeleafTemplateEngine());
@@ -79,7 +88,6 @@ public class main {
             map.put("viestit", viestidao.findAllIn(ketjuId));
             map.put("ketju", k);
             map.put("alue", aluedao.findOne(alueId));
-            map.put("context", context);
 
             return new ModelAndView(map, "viestit");
         }, new ThymeleafTemplateEngine());
