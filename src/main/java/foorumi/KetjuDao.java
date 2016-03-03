@@ -42,7 +42,12 @@ public class KetjuDao implements Dao<Ketju, Integer> {
 
     public List<Ketju> findAllIn(int alueId, int sivu) throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM ketju WHERE alue_id = ? LIMIT 10 OFFSET ?;");
+        //PreparedStatement stmt = connection.prepareStatement("SELECT * FROM ketju WHERE alue_id = ? LIMIT 10 OFFSET ?;");
+        PreparedStatement stmt = connection.prepareStatement("SELECT Ketju.* FROM Ketju LEFT JOIN " +
+            "(SELECT Viesti.ketju_id, MAX(pvm) AS max_pvm FROM viesti GROUP BY Viesti.ketju_id)" +
+            "viesti ON Ketju.id = viesti.ketju_id " +
+            "WHERE ketju.alue_id = ?" +
+            "ORDER BY max_pvm DESC LIMIT 10 OFFSET ?;");
         stmt.setInt(1, alueId);
         stmt.setInt(2, (sivu - 1) * 10);
         ResultSet rs = stmt.executeQuery();
